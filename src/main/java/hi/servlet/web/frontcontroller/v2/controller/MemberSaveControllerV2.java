@@ -1,0 +1,33 @@
+package hi.servlet.web.frontcontroller.v2.controller;
+
+import hi.servlet.domain.member.Member;
+import hi.servlet.domain.member.MemberRepository;
+import hi.servlet.web.frontcontroller.MyView;
+import hi.servlet.web.frontcontroller.v2.ControllerV2;
+
+import javax.servlet.RequestDispatcher;
+import javax.servlet.ServletException;
+import javax.servlet.http.HttpServletRequest;
+import javax.servlet.http.HttpServletResponse;
+import java.io.IOException;
+
+public class MemberSaveControllerV2 implements ControllerV2 {
+
+
+    private MemberRepository memberRepository = MemberRepository.getInstance();
+
+    @Override
+    public MyView process(HttpServletRequest request, HttpServletResponse response) throws ServletException,
+                                                                                           IOException {
+        // request 정보로 회원 가입하기
+        String username = request.getParameter("username");
+        int age = Integer.parseInt(request.getParameter("age"));
+
+        Member member = new Member(username, age);
+        memberRepository.save(member);
+
+        // model 에 데이터를 보관한다.
+        request.setAttribute("member", member); // jsp 에서 member 라는 key로 사용할 수 있다.
+        return new MyView("/WEB-INF/views/save-result.jsp");
+    }
+}
